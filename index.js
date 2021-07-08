@@ -30,6 +30,10 @@ function startQuestions() {
             addRole()
         }else if(answer.choice == "View Role"){
             viewRole()
+        }else if(answer.choice == "Add Employee"){
+            addEmp()
+        }else if(answer.choice == "View Employee"){
+            viewEmp()
         }else {
             console.log("Bye.")
             connection.end()
@@ -81,7 +85,8 @@ function addRole(){
         {
             message: "What is the name of the new role?",
             name: "roleName"
-        }
+        },
+        
     ]).then(answer => {
         let queryString =`
         INSERT INTO role (title)
@@ -90,6 +95,35 @@ function addRole(){
         connection.query(queryString, [answer.roleName], err => {
             if(err) throw err
             console.log("Added new Role")
+            startQuestions()
+        })
+    })
+}
+
+function viewEmp(){
+    connection.query("SELECT * FROM employee", (err, data) => {
+        if(err) throw err;
+        console.log("\n")
+        console.table(data)
+        console.log("\n")
+        startQuestions()
+    })
+}
+
+function addEmp(){
+    inquirer.prompt([
+        {
+            message: "What is the emplyees first name?",
+            name: "empFirst"
+        },
+    ]).then(answer => {
+        let queryString =`
+        INSERT INTO employee (first_name)
+        VALUES (?)`;
+        
+        connection.query(queryString, [answer.empFirst], err => {
+            if(err) throw err
+            console.log("Added new employee")
             startQuestions()
         })
     })
